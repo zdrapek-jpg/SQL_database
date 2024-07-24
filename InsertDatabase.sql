@@ -101,3 +101,23 @@ INSERT INTO one_order (itemId, orderId, amount, price) VALUES
 (3, 1, 10, NULL),
 (3, 2, 20, NULL),
 (3, 3, 2, NULL);
+
+#update ilosć x cena w one_order
+UPDATE one_order as o 
+INNER JOIN store AS s ON o.itemId = s.itemId
+SET o.price = o.amount*s.price_for_1;
+
+# update w zamoówienie sumowanie warotści z pojedyńczych zamóień produktów i zliczanie ich 
+UPDATE orders as o 
+INNER JOIN 
+(SELECT one.orderId, SUM(one.price) as total  from one_order as one   GROUP BY orderId) as suma 
+ON o.orderId  = suma.orderId
+SET o.price =  suma.total;
+
+# DROP TRIGGER IF EXISTS  bazadanychfirma.while_update_one_order_up_store;
+ 
+ INSERT INTO one_order  (itemId, orderId, amount, price) VALUES
+ (1, 5, 20, NULL);
+ # ZWRACA WYJĄTEK  BO ZA DUŻO 
+ INSERT INTO one_order  (itemId, orderId, amount, price) VALUES
+ (1, 5, 140, NULL);
